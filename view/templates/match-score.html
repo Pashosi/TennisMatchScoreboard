@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="style.css">
     <title>SuperTennis</title>
 </head>
 <body>
@@ -25,24 +25,24 @@
                     <div class="cell">Игрок</div>
                     <div class="cell">Сет</div>
                     <div class="cell">Гейм</div>
-                    <div class="cell">Поинт</div>
+                    <div class="cell">Счет</div>
                 </div>
                 <div class="row">
-                    <div class="cell">Игрок 1</div>
-                    <div class="cell">1</div>
-                    <div class="cell">2</div>
-                    <div class="cell">30</div>
+                    <div class="cell">{{player1.name}}</div>
+                    <div class="cell">в процессе</div>
+                    <div class="cell">в процессе</div>
+                    <div class="cell">{{player1_score}}</div>
                 </div>
                 <div class="row">
-                    <div class="cell">Игрок 2</div>
-                    <div class="cell">2</div>
-                    <div class="cell">3</div>
-                    <div class="cell">40</div>
+                    <div class="cell">{{player2.name}}</div>
+                    <div class="cell">в процессе</div>
+                    <div class="cell">в процессе</div>
+                    <div class="cell">{{player2_score}}</div>
                 </div>
             </div>
             <div class="buttons">
-                <button class="btn">Слева</button>
-                <button class="btn">Справа</button>
+                <button class="btn">{{player1.name}}</button>
+                <button class="btn">{{player2.name}}</button>
             </div>
         </div>
     </main>
