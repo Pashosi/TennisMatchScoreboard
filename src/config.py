@@ -7,7 +7,7 @@ db_config = {
     }
 }
 
-path_list = {
+paths_list = {
     "index": r"index.html",
     "new_match": r"new-match.html",
     "matches": r"matches.html",

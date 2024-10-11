@@ -23,5 +23,5 @@ def app(environ, start_response):
 
 
 if __name__ == '__main__':
-    application = WhiteNoise(app, config.path_list['static_files'])
+    application = WhiteNoise(app, config.paths_list['static_files'])
     serve(application, host='localhost', port=8080)
