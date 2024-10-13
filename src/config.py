@@ -6,12 +6,14 @@ db_config = {
         "password": "root"
     }
 }
-
 paths_list = {
     "index": r"index.html",
     "new_match": r"new-match.html",
     "matches": r"matches.html",
     "match_score": r"match-score.html",
+    "error": r"not_found.html",
     "static_files": r"D:/TennisMatchScoreboard/view/static/css/",
     "templates_files": r"D:/TennisMatchScoreboard/view/templates/",
+
 }
+

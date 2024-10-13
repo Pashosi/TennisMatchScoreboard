@@ -2,7 +2,11 @@ from urllib.parse import urlencode
 
 from src import config
 from src.controller import Controller
+from src.handlers.index_handler import IndexHandler
 from src.handlers.match_score_handler import MatchScoreHandler
+from src.handlers.matches_handler import MatchesHandler
+from src.handlers.new_match_handler import NewMatchHandler
+from src.handlers.not_found_handler import NotFoundHandler
 
 
 class Router:
@@ -10,19 +14,22 @@ class Router:
         self.environ = environ
         self.start_response = start_response
         self.controller = Controller()
+
     #     self.path = environ.get('PATH_INFO', '/').lstrip('/')
     #     self.method = environ.get('REQUEST_METHOD', 'GET')
 
     def __call__(self, method: str, path: str):
+        status = '200 OK'
+        headers = [('Content-type', 'text/html; charset=utf-8'), ]
         if method == 'GET':
             if path == config.paths_list['new_match']:
-                request = self.render_template(config.paths_list['new_match'], self.start_response)
+                request = request_template(self.start_response, status, headers, NewMatchHandler)
                 return request
             elif path == config.paths_list['index']:
-                request = self.render_template(config.paths_list['index'], self.start_response)
+                request = request_template(self.start_response, status, headers, IndexHandler)
                 return request
             elif path == config.paths_list['matches']:
-                request = self.render_template(config.paths_list['matches'], self.start_response)
+                request = request_template(self.start_response, status, headers, MatchesHandler)
                 return request
             elif path.startswith(config.paths_list['match_score']):
                 # получаем uuid
@@ -30,16 +37,8 @@ class Router:
                 # загружаем данные матча
                 data_match = self.controller.get_data_match_score(uuid)
 
-                handler = MatchScoreHandler(data_match)
-                request = handler()
-                response_headers = [("Content-type", "text/html; charset=utf-8"), ]
-                self.start_response('200 OK', response_headers)
-
-                html_as_bytes = request.encode("utf-8")
-                n = 1
-                # request = self.render_template(config.paths_list['match_score'], self.start_response, d)
-                n = 1
-                return [html_as_bytes]
+                request = request_template(self.start_response, status, headers, MatchScoreHandler, data_match)
+                return request
 
         elif method == 'POST':
             if path == config.paths_list['new_match']:
@@ -52,24 +51,26 @@ class Router:
                 # После обработки данных делаем редирект
                 status = '302 Found'
                 headers = [('Location', redirect_url)]  # Перенаправляем на страницу success
-                self.start_response(status, headers)
-                return []
+                request = request_template(self.start_response, status, headers)
+                return request
         else:
-            self.start_response('404 Not Found', [])
-            return ['404 Not Found']
+            status = '404 Not Found'
+            headers = [('Content-type', 'text/html; charset=utf-8'), ]
+            request = request_template(self.start_response, status, headers, NotFoundHandler)
+            return request
 
 
-    def render_template(self, path, start_response, data=None):
-        """Загрузка HTML-шаблона"""
-        with open(f'{config.paths_list["templates_files"]}{path}', 'rb') as file:
+def request_template(start_response, status, response_headers, class_handler=None, data=None):
+    """Формируем html и возвращаем его"""
+    if not class_handler:  # случай когда просто нужен редирект
+        start_response(status, response_headers)
+        return []
+    if data:  # если есть данные, то передаем в обработчик
+        handler = class_handler(data)
+    else:
+        handler = class_handler()
+    request = handler()
+    start_response(status, response_headers)
 
-            content = file.read().decode('utf-8')
-            if data:
-                html_content = f'{data}'
-                content = content.replace('{{ html_content }}', html_content)
-            if content:
-                start_response('200 OK', [])
-                return [content.encode()]
-            else:
-                start_response('404 Not Found', [('Content-Type', 'text/html;charset=utf-8')])
-                return [b'404 Not Found']
+    html_as_bytes = request.encode("utf-8")
+    return [html_as_bytes]
