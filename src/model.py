@@ -37,7 +37,18 @@ class Model:
                 match = MatchesModel(
                     player1=player1,
                     player2=player2,
-                    score={'player1': 0, 'player2': 0},
+                    score={
+                        'player1': {
+                            "sets": 0,
+                            "games": 0,
+                            "points": 0,
+                        },
+                        'player2': {
+                            "sets": 0,
+                            "games": 0,
+                            "points": 0,
+                        }
+                    },
                 )
                 session.add(match)
             return session.execute(sa.select(MatchesModel).where(MatchesModel.id == match.id)).scalar()
