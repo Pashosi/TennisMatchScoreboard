@@ -15,8 +15,14 @@ class MatchScoreHandler:
                           f'{config.paths_list["match_score"]}?uuid={self.data_match.uuid}'
             player1 = self.data_match.player1
             player2 = self.data_match.player2
-            player1_score = self.data_match.score['player1']
-            player2_score = self.data_match.score['player2']
+            player1_sets = self.data_match.score['player1']['sets']
+            player2_sets = self.data_match.score['player2']['sets']
+            player1_games = self.data_match.score['player1']['games']
+            player2_games = self.data_match.score['player2']['games']
+            player1_points = self.data_match.score['player1']['points']
+            player2_points = self.data_match.score['player2']['points']
+
+
 
             temlate = Template(content_before)
 
@@ -24,7 +30,11 @@ class MatchScoreHandler:
                 request_uri=request_uri,
                 player1=player1,
                 player2=player2,
-                player1_score=player1_score,
-                player2_score=player2_score
+                player1_sets=player1_sets,
+                player2_sets=player2_sets,
+                player1_games=player1_games,
+                player2_games=player2_games,
+                player1_points=player1_points,
+                player2_points=player2_points
             )
             return content_afer
