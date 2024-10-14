@@ -1,7 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import Session, joinedload
 
-from src.DTO import DTOPlayerGet
 from src.db.create_db_and_tables import PlayersModel, MatchesModel
 
 
@@ -65,3 +64,9 @@ class Model:
                 .scalar()
             )
             return request
+
+    def update_match(self, data: MatchesModel):
+        with Session(self.engine) as session:
+            obj = session.query(MatchesModel).filter(MatchesModel.id == data.id).first()
+            obj.score = data.score
+            session.commit()

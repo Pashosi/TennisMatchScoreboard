@@ -21,6 +21,7 @@ class MatchScoreHandler:
             player2_games = self.data_match.score['player2']['games']
             player1_points = self.data_match.score['player1']['points']
             player2_points = self.data_match.score['player2']['points']
+            uuid = f'uuid={self.data_match.uuid}'
 
 
 
@@ -28,6 +29,7 @@ class MatchScoreHandler:
 
             content_afer = temlate.render(
                 request_uri=request_uri,
+                uuid=uuid,
                 player1=player1,
                 player2=player2,
                 player1_sets=player1_sets,

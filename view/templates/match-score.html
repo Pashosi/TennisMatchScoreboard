@@ -9,43 +9,49 @@
     <title>SuperTennis</title>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="new-match.html">New</a>
-            <a href="matches.html">Matches</a>
-        </nav>
-    </header>
+<header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="new-match.html">New</a>
+        <a href="matches.html">Matches</a>
+    </nav>
+</header>
 
-    <main>
-        <div class="scoreboard">
-            <h2>Процесс игры</h2>
-            <div class="table">
-                <div class="row">
-                    <div class="cell">Игрок</div>
-                    <div class="cell">Сет</div>
-                    <div class="cell">Гейм</div>
-                    <div class="cell">Счет</div>
-                </div>
-                <div class="row">
-                    <div class="cell">{{player1.name}}</div>
-                    <div class="cell">{{player1_sets}}</div>
-                    <div class="cell">{{player1_games}}</div>
-                    <div class="cell">{{player1_points}}</div>
-                </div>
-                <div class="row">
-                    <div class="cell">{{player2.name}}</div>
-                    <div class="cell">{{player2_sets}}</div>
-                    <div class="cell">{{player2_games}}</div>
-                    <div class="cell">{{player1_points}}</div>
-                </div>
+<main>
+    <div class="scoreboard">
+        <h2>Процесс игры</h2>
+        <div class="table">
+            <div class="row">
+                <div class="cell">Игрок</div>
+                <div class="cell">Сет</div>
+                <div class="cell">Гейм</div>
+                <div class="cell">Счет</div>
             </div>
-            <div class="buttons">
-                <button class="btn">{{player1.name}}</button>
-                <button class="btn">{{player2.name}}</button>
+            <div class="row">
+                <div class="cell">{{player1.name}}</div>
+                <div class="cell">{{player1_sets}}</div>
+                <div class="cell">{{player1_games}}</div>
+                <div class="cell">{{player1_points}}</div>
+            </div>
+            <div class="row">
+                <div class="cell">{{player2.name}}</div>
+                <div class="cell">{{player2_sets}}</div>
+                <div class="cell">{{player2_games}}</div>
+                <div class="cell">{{player2_points}}</div>
             </div>
         </div>
-    </main>
-  </div>
+        <div class="buttons">
+            <form action="" method="POST">
+                <input type="hidden" name="player1" value=15 />
+                <button class="btn">{{player1.name}}</button>
+            </form>
+            <form action="" method="POST">
+                <input type="hidden" name="player2" value=15 />
+                <button class="btn">{{player2.name}}</button>
+            </form>
+        </div>
+    </div>
+</main>
+</div>
 </body>
 </html>

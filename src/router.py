@@ -35,9 +35,9 @@ class Router:
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
                 # загружаем данные матча
-                data_match = self.controller.get_data_match_score(uuid)
+                match = self.controller.get_match_score(uuid)
 
-                request = request_template(self.start_response, status, headers, MatchScoreHandler, data_match)
+                request = request_template(self.start_response, status, headers, MatchScoreHandler, match)
                 return request
 
         elif method == 'POST':
@@ -52,6 +52,17 @@ class Router:
                 status = '302 Found'
                 headers = [('Location', redirect_url)]  # Перенаправляем на страницу success
                 request = request_template(self.start_response, status, headers)
+                return request
+            elif path.startswith(config.paths_list['match_score']):
+                """Обработчик кнопок матча"""
+                # получаем uuid
+                uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
+                # data_button = self.controller.get_data_match(self.environ)
+                match = self.controller.get_match_score(uuid)
+                new_data_match = self.controller.add_point_match(self.environ, match)
+
+                # добавляем в html измененный экземпляр матча
+                request = request_template(self.start_response, status, headers, MatchScoreHandler, new_data_match)
                 return request
         else:
             status = '404 Not Found'
