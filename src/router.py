@@ -7,13 +7,14 @@ from src.handlers.match_score_handler import MatchScoreHandler
 from src.handlers.matches_handler import MatchesHandler
 from src.handlers.new_match_handler import NewMatchHandler
 from src.handlers.not_found_handler import NotFoundHandler
+from src.service.tennis_match import TennisMatch
 
 
 class Router:
     def __init__(self, environ, start_response):
         self.environ = environ
         self.start_response = start_response
-        self.controller = Controller()
+        self.unfinished_matches = {}
 
     #     self.path = environ.get('PATH_INFO', '/').lstrip('/')
     #     self.method = environ.get('REQUEST_METHOD', 'GET')
@@ -21,6 +22,7 @@ class Router:
     def __call__(self, method: str, path: str):
         status = '200 OK'
         headers = [('Content-type', 'text/html; charset=utf-8'), ]
+
         if method == 'GET':
             if path == config.paths_list['new_match']:
                 request = request_template(self.start_response, status, headers, NewMatchHandler)
@@ -35,14 +37,19 @@ class Router:
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
                 # загружаем данные матча
-                match = self.controller.get_match_score(uuid)
+                controller = Controller()
+                match = controller.get_match(uuid)
 
                 request = request_template(self.start_response, status, headers, MatchScoreHandler, match)
                 return request
 
         elif method == 'POST':
             if path == config.paths_list['new_match']:
-                data_form = self.controller.new_match(self.environ)
+                controller = Controller()
+                data_form = controller.new_match(self.environ)
+                n = 2
+                instance_match = TennisMatch(data_form)
+                self.unfinished_matches[instance_match.uuid] = instance_match
                 n = 1
                 # Создаем параметры для редиректа
                 query_params = urlencode({'uuid': data_form.uuid})
@@ -58,8 +65,10 @@ class Router:
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
                 # data_button = self.controller.get_data_match(self.environ)
-                match = self.controller.get_match_score(uuid)
-                new_data_match = self.controller.add_point_match(self.environ, match)
+                controller = Controller()
+                match = controller.get_match(uuid)
+
+                new_data_match = controller.add_point_match(self.environ, match)
 
                 # добавляем в html измененный экземпляр матча
                 request = request_template(self.start_response, status, headers, MatchScoreHandler, new_data_match)
