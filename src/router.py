@@ -71,11 +71,15 @@ class Router:
                 # match = controller.get_match(uuid)
 
                 match = self.unfinished_matches.get(uuid)
+                if match is None:
+                    raise Exception('Не найден матч')
 
                 # new_data_match = controller.add_point_match(self.environ, match)
 
                 # добавляем в html измененный экземпляр матча
                 request = request_template(self.start_response, status, headers, MatchScorePostHandler, match, self.environ)
+                if match.winner:
+                    self.dellete_unfinished_match(uuid)
                 return request
         else:
             status = '404 Not Found'
@@ -83,6 +87,9 @@ class Router:
             request = request_template(self.start_response, status, headers, NotFoundHandler)
             return request
 
+    def dellete_unfinished_match(self, uuid):
+        self.unfinished_matches.pop(uuid)
+        print(f'Матч {uuid} удален')
 
 def request_template(start_response, status, response_headers, class_handler=None, match=None, environ=None):
     """Формируем html и возвращаем его"""
@@ -100,3 +107,4 @@ def request_template(start_response, status, response_headers, class_handler=Non
 
     html_as_bytes = request.encode("utf-8")
     return [html_as_bytes]
+

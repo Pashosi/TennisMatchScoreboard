@@ -20,7 +20,12 @@ class MatchScorePostHandler:
             request_uri = f'{config.paths_list["templates_files"]}' \
                           f'{config.paths_list["match_score"]}?uuid={self.match.uuid}'
 
+            # Добавляем поинт
             self.add_point_match(self.environ, self.match)
+
+            # обновление в БД завершенного матча
+            if self.match.winner:
+                self.match.update_match_in_bd()
 
             temlate = Template(content_before)
 
@@ -33,8 +38,8 @@ class MatchScorePostHandler:
                 player2_sets=self.match.player2_score_set,
                 player1_games=self.match.player1_score_game,
                 player2_games=self.match.player2_score_game,
-                player1_points=self.match.player1_score_point,
-                player2_points=self.match.player2_score_point
+                player1_points=self.translate_point(self.match.player1_score_point, self.match.tiebreak),
+                player2_points=self.translate_point(self.match.player2_score_point, self.match.tiebreak),
             )
             return content_afer
 
@@ -56,3 +61,17 @@ class MatchScorePostHandler:
         name = next(iter(post_data))
         value = post_data[name][0]
         return {'name': name, 'value': value}
+
+    def translate_point(self, number, tiebreak=None):
+        """Перевод очков из цифры в число"""
+        if tiebreak:
+            return number
+        sup_dict = {
+            0: '0',
+            1: '15',
+            2: '30',
+            3: '40',
+            4: 'AD',
+        }
+
+        return sup_dict[number]

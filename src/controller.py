@@ -2,7 +2,6 @@ from urllib.parse import parse_qs
 
 
 from src.model import Model
-from src.service.service import Service
 
 
 class Controller:
@@ -29,6 +28,8 @@ class Controller:
                 players.append(name_player)
         if len(players) < 2:
             raise Exception('необходимо 2 игрока, а их меньше')
+        if players[0] == players[1]:
+            raise Exception('игрок не может играть сам с собой')
         return players
 
     def get_data_form_new_match(self, environ):
@@ -51,12 +52,12 @@ class Controller:
         data_match = model_obj.get_match(uuid)
         return data_match
 
-    def add_point_match(self, environ, data_match):
-        """Добавление поинта в матч"""
-        point = self.get_data_match(environ)
-        service = Service()
-        request = service.add_point(point, data_match)
-        return request
+    # def add_point_match(self, environ, data_match):
+    #     """Добавление поинта в матч"""
+    #     point = self.get_data_match(environ)
+    #     service = Service()
+    #     request = service.add_point(point, data_match)
+    #     return request
 
     def get_data_match(self, environ):
         """Получение данных из кнопки матча"""

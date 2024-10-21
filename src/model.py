@@ -8,15 +8,14 @@ class Model:
 
     def get_player(self, player):
         with Session(engine) as session:
-            with session.begin():
-                res = session.execute(sa.select(PlayersModel).where(PlayersModel.name == player))
-                n = res.scalar()
-                if n:
-                    print(n)
+            res = session.execute(sa.select(PlayersModel).where(PlayersModel.name == player))
+            n = res.scalar()
+            if n:
+                print(n)
 
-                    return n
-                print('игрок не найден')
-                return []
+                return n
+            print('игрок не найден')
+            return []
 
     def add_player(self, name):
         """Добавление игрока в БД и возвращение его экземпляра"""
@@ -30,24 +29,24 @@ class Model:
 
     def add_match(self, player1, player2):
         with Session(engine) as session:
-            with session.begin():
-                match = MatchesModel(
-                    player1=player1,
-                    player2=player2,
-                    score={
-                        'player1': {
-                            "sets": 0,
-                            "games": 0,
-                            "points": 0,
-                        },
-                        'player2': {
-                            "sets": 0,
-                            "games": 0,
-                            "points": 0,
-                        }
+            match = MatchesModel(
+                player1=player1,
+                player2=player2,
+                score={
+                    'player1': {
+                        "sets": 0,
+                        "games": 0,
+                        "points": 0,
                     },
-                )
-                session.add(match)
+                    'player2': {
+                        "sets": 0,
+                        "games": 0,
+                        "points": 0,
+                    }
+                },
+            )
+            m = session.add(match)
+            session.commit()
             return session.execute(sa.select(MatchesModel).where(MatchesModel.id == match.id)).scalar()
 
     def get_match(self, uuid):
@@ -64,8 +63,14 @@ class Model:
             )
             return request
 
-    def update_match(self, data: MatchesModel):
+    def update_winner_and_score_match(self, uuid, name_winner: PlayersModel, data: dict):
         with Session(engine) as session:
-            obj = session.query(MatchesModel).filter(MatchesModel.id == data.id).first()
-            obj.score = data.score
+            # obj = session.query(MatchesModel).filter(MatchesModel.uuid == uuid).first()
+            # obj.score = data
+            # obj.winner_fk = self.get_player(name_winner.name).id
+            # session.commit()
+            session.execute(
+                sa.update(MatchesModel).where(MatchesModel.uuid == uuid).values(score=data, winner_fk=name_winner.id)
+            )
+
             session.commit()
