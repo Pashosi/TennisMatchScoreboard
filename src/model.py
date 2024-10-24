@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 import sqlalchemy as sa
 from sqlalchemy.orm import Session, joinedload
 
@@ -32,6 +34,7 @@ class Model:
             match = MatchesModel(
                 player1=player1,
                 player2=player2,
+                uuid=str(uuid4()),
                 score={
                     'player1': {
                         "sets": 0,
@@ -45,7 +48,7 @@ class Model:
                     }
                 },
             )
-            m = session.add(match)
+            session.add(match)
             session.commit()
             return session.execute(sa.select(MatchesModel).where(MatchesModel.id == match.id)).scalar()
 

@@ -20,6 +20,7 @@
 <main>
     <div class="scoreboard">
         <h2>Процесс игры</h2>
+        {% if winner is none %}
         <div class="table">
             <div class="row">
                 <div class="cell">Игрок</div>
@@ -50,6 +51,9 @@
                 <button class="btn">{{player2.name}}</button>
             </form>
         </div>
+        {% else %}
+        <h2>Выйграл игрок {{winner.name}}</h2>
+        {% endif %}
     </div>
 </main>
 </div>

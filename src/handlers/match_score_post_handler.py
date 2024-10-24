@@ -40,6 +40,7 @@ class MatchScorePostHandler:
                 player2_games=self.match.player2_score_game,
                 player1_points=self.translate_point(self.match.player1_score_point, self.match.tiebreak),
                 player2_points=self.translate_point(self.match.player2_score_point, self.match.tiebreak),
+                winner=self.match.winner
             )
             return content_afer
 

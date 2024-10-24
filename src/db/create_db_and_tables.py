@@ -32,7 +32,7 @@ class PlayersModel(AbstractModel):
 class MatchesModel(AbstractModel):
     __tablename__ = 'matches'
 
-    uuid: Mapped[UUID] = mapped_column(sa.String(255), default=uuid4().hex, nullable=False, unique=True)
+    uuid: Mapped[UUID] = mapped_column(sa.String(255), nullable=False, unique=True)
     player1_fk: Mapped[int] = mapped_column(sa.ForeignKey('players.id', ondelete="CASCADE"), nullable=False)
     player2_fk: Mapped[int] = mapped_column(sa.ForeignKey('players.id', ondelete="CASCADE"), nullable=False)
     winner_fk: Mapped[int] = mapped_column(sa.ForeignKey('players.id', ondelete="CASCADE"), nullable=True)

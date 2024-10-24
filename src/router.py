@@ -40,6 +40,9 @@ class Router:
                 # загружаем данные матча
                 # controller = Controller()
                 match = self.unfinished_matches.get(uuid)
+                if not match:
+                    data = Controller.get_match(uuid)
+                    match = TennisMatch(data)
                 n = 1
                 request = request_template(self.start_response, status, headers, MatchScoreGetHandler, match)
                 return request
