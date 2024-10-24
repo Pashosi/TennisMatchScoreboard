@@ -39,7 +39,22 @@ class MatchScoreGetHandler:
                 player2_sets=self.match.player2_score_set,
                 player1_games=self.match.player1_score_game,
                 player2_games=self.match.player2_score_game,
-                player1_points=self.match.player1_score_point,
-                player2_points=self.match.player2_score_point
+                player1_points=self.translate_point(self.match.player1_score_point, self.match.tiebreak),
+                player2_points=self.translate_point(self.match.player2_score_point, self.match.tiebreak),
+                winner=self.match.winner
             )
             return content_afer
+
+    def translate_point(self, number, tiebreak=None):
+        """Перевод очков из цифры в число"""
+        if tiebreak:
+            return number
+        sup_dict = {
+            0: '0',
+            1: '15',
+            2: '30',
+            3: '40',
+            4: 'AD',
+        }
+
+        return sup_dict[number]
