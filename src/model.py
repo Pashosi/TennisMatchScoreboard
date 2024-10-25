@@ -68,12 +68,50 @@ class Model:
 
     def update_winner_and_score_match(self, uuid, name_winner: PlayersModel, data: dict):
         with Session(engine) as session:
-            # obj = session.query(MatchesModel).filter(MatchesModel.uuid == uuid).first()
-            # obj.score = data
-            # obj.winner_fk = self.get_player(name_winner.name).id
-            # session.commit()
             session.execute(
                 sa.update(MatchesModel).where(MatchesModel.uuid == uuid).values(score=data, winner_fk=name_winner.id)
             )
 
             session.commit()
+
+    def get_matches(self, start_id=None, end_id=None, filter=None):
+        with Session(engine) as session:
+
+            if start_id and end_id:
+                return session.execute(sa.select(MatchesModel).order_by(MatchesModel.id).options(
+                    joinedload(MatchesModel.player1),
+                    joinedload(MatchesModel.player2),
+                    joinedload(MatchesModel.winner)).where(MatchesModel.id.between(start_id, end_id)).where(
+                    MatchesModel.winner_fk != None)).scalars().all()
+            if start_id:
+                return session.execute(sa.select(MatchesModel).order_by(MatchesModel.id).options(
+                    joinedload(MatchesModel.player1),
+                    joinedload(MatchesModel.player2),
+                    joinedload(MatchesModel.winner)).where(MatchesModel.id >= start_id).where(
+                    MatchesModel.winner_fk != None)).scalars().all()
+            if end_id:
+                return session.execute(sa.select(MatchesModel).order_by(MatchesModel.id).options(
+                    joinedload(MatchesModel.player1),
+                    joinedload(MatchesModel.player2),
+                    joinedload(MatchesModel.winner)).where(MatchesModel.id <= end_id).where(
+                    MatchesModel.winner_fk != None)).scalars().all()
+            if filter:
+                return session.execute(sa.select(MatchesModel).order_by(MatchesModel.id).options(
+                    joinedload(MatchesModel.player1),
+                    joinedload(MatchesModel.player2),
+                    joinedload(MatchesModel.winner)).where(
+                    MatchesModel.winner_fk == filter).where(MatchesModel.winner_fk != None)).scalars().all()
+
+            return session.execute(sa.select(MatchesModel).order_by(MatchesModel.id).options(
+                joinedload(MatchesModel.player1),
+                joinedload(MatchesModel.player2),
+                joinedload(MatchesModel.winner)).where(
+                MatchesModel.winner_fk != None)).scalars().all()
+
+    def get_players_winner_matches(self):
+        with Session(engine) as session:
+            return session.execute(
+                sa.select(PlayersModel.name).select_from(MatchesModel)
+                .join(PlayersModel, PlayersModel.id == MatchesModel.winner_fk)
+                .where(MatchesModel.winner_fk.isnot(None))
+            ).scalars().all()

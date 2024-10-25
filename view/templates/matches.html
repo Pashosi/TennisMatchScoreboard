@@ -13,51 +13,49 @@
     <nav>
         <a href="index.html">Home</a>
         <a href="new-match.html">New</a>
-        <a href="matches.html">Matches</a>
+        <a href="matches.html?page=1">Matches</a>
     </nav>
 </header>
 
 <main>
     <div class="scoreboard">
         <h2>Результаты матча</h2>
-        <form action="/search" method="get">
-            <input type="text" name="query" placeholder="Поиск...">
+        <form action="matches.html" method="get">
+            <input type="hidden" name="page" value="{{ page }}">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Поиск..." list="name-suggestions">
             <button type="submit">Искать</button>
+            <!-- datalist для автозаполнения на основе имен выйгравших матч -->
+            <datalist id="name-suggestions">
+                {% for name in list_winner_players %}
+                    <option value="{{ name }}"></option>
+                {% endfor %}
+            </datalist>
         </form>
         <div class="table">
             <div class="row">
-                <div class="cell">Игрок</div>
-                <div class="cell">Сет</div>
-                <div class="cell">Гейм</div>
-                <div class="cell">Поинт</div>
+                <div class="cell">Игрок1</div>
+                <div class="cell">Игрок2</div>
+                <div class="cell">Победитель</div>
             </div>
-            <div class="row">
-                <div class="cell">Игрок 1</div>
-                <div class="cell">1</div>
-                <div class="cell">2</div>
-                <div class="cell">30</div>
-            </div>
-            <div class="row">
-                <div class="cell">Игрок 2</div>
-                <div class="cell">2</div>
-                <div class="cell">3</div>
-                <div class="cell">40</div>
-            </div>
-        </div>
-        <div class="buttons">
-            <button class="btn">Слева</button>
-            <button class="btn">Справа</button>
+            {% for match in matches %}
+                <div class="row">
+                    <div class="cell">{{ match.player1.name }}</div>
+                    <div class="cell">{{ match.player2.name }}</div>
+                    <div class="cell">{{ match.winner.name }}</div>
+                </div>
+            {% endfor %}
         </div>
         <div class="center">
             <div class="pagination">
-                <a href="#">&laquo;</a>
-                <a href="#">1</a>
-                <a href="#" class="active">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">6</a>
-                <a href="#">&raquo;</a>
+                {% if page > 1 %}
+                    <a href="?page={{ page - 1 }}">Предыдущая</a>
+                {% endif %}
+
+                <a>Страница {{ page }} из {{ pages }}</a>
+
+                {% if page < pages %}
+                    <a href="?page={{ page + 1 }}">Следующая</a>
+                {% endif %}
             </div>
         </div>
     </div>

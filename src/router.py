@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qs
 
 from src import config
 from src.controller import Controller
@@ -17,6 +17,7 @@ class Router:
         self.start_response = start_response
 
     unfinished_matches = {}  # словарь не завершенных матчей
+
     #     self.path = environ.get('PATH_INFO', '/').lstrip('/')
     #     self.method = environ.get('REQUEST_METHOD', 'GET')
 
@@ -31,8 +32,18 @@ class Router:
             elif path == config.paths_list['index']:
                 request = request_template(self.start_response, status, headers, IndexHandler)
                 return request
-            elif path == config.paths_list['matches']:
-                request = request_template(self.start_response, status, headers, MatchesHandler)
+            elif path.startswith(config.paths_list['matches']):
+                n = 1
+                query_string = self.environ.get('QUERY_STRING')
+                params = parse_qs(query_string)
+
+                # достаем параметры страницы
+                page = int(params.get('page', [1])[0])  # номер страницы или 1 если нет
+
+                search_query = params.get('search', [''])[0]  # параметр фильтрации, если есть
+
+                data = {'page': page, 'search': search_query}
+                request = request_template(self.start_response, status, headers, MatchesHandler, match=data)
                 return request
             elif path.startswith(config.paths_list['match_score']):
                 # получаем uuid
@@ -80,7 +91,8 @@ class Router:
                 # new_data_match = controller.add_point_match(self.environ, match)
 
                 # добавляем в html измененный экземпляр матча
-                request = request_template(self.start_response, status, headers, MatchScorePostHandler, match, self.environ)
+                request = request_template(self.start_response, status, headers, MatchScorePostHandler, match,
+                                           self.environ)
                 if match.winner:
                     self.dellete_unfinished_match(uuid)
                 return request
@@ -93,6 +105,7 @@ class Router:
     def dellete_unfinished_match(self, uuid):
         self.unfinished_matches.pop(uuid)
         print(f'Матч {uuid} удален')
+
 
 def request_template(start_response, status, response_headers, class_handler=None, match=None, environ=None):
     """Формируем html и возвращаем его"""
@@ -110,4 +123,3 @@ def request_template(start_response, status, response_headers, class_handler=Non
 
     html_as_bytes = request.encode("utf-8")
     return [html_as_bytes]
-
