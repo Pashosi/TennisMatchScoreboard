@@ -21,9 +21,9 @@
     <div class="scoreboard">
         <h2>Результаты матча</h2>
         <form action="matches.html" method="get">
-            <input type="hidden" name="page" value="{{ page }}">
-            <input type="text" name="search" value="{{ search_query }}" placeholder="Поиск..." list="name-suggestions">
-            <button type="submit">Искать</button>
+            <input type="hidden" name="page" value="1">
+            <input class="form-search-input" type="text" name="search" value="{{ search_query }}" placeholder="Поиск..." list="name-suggestions">
+            <button class="btn" type="submit">Искать</button>
             <!-- datalist для автозаполнения на основе имен выйгравших матч -->
             <datalist id="name-suggestions">
                 {% for name in list_winner_players %}
@@ -48,13 +48,13 @@
         <div class="center">
             <div class="pagination">
                 {% if page > 1 %}
-                    <a href="?page={{ page - 1 }}">Предыдущая</a>
+                    <a href="?page={{ page - 1 }}&search={{ search_query }}">Предыдущая</a>
                 {% endif %}
 
                 <a>Страница {{ page }} из {{ pages }}</a>
 
                 {% if page < pages %}
-                    <a href="?page={{ page + 1 }}">Следующая</a>
+                    <a href="?page={{ page + 1 }}&search={{ search_query }}">Следующая</a>
                 {% endif %}
             </div>
         </div>

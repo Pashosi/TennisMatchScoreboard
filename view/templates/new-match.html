@@ -23,10 +23,10 @@
         <h2>Начать новый матч</h2>
         <form action="new-match.html" method="POST">
             <label >Игрок 1:</label>
-            <input type="text" name="name1" required>
+            <input class="form-input" type="text" name="name1" pattern="[a-zA-Zа-яА-Я0-9]+" required title="Только буквы и цифры">
             <p>
                 <label >Игрок 2:</label>
-                <input type="text" name="name2" required>
+                <input class="form-input" type="text" name="name2" pattern="[a-zA-Zа-яА-Я0-9]+" required title="Только буквы и цифры">
             <p>
                 <button class="btn" type="submit">Отправить</button>
         </form>

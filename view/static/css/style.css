@@ -86,7 +86,7 @@ main {
     font-size: 16px; /* Размер шрифта для кнопок */
     border: none; /* Убираем обводку */
     border-radius: 5px; /* Скругление углов */
-    background-color: #008000; /* Цвет фона */
+    background-color: #4b7556; /* Цвет фона */
     color: white; /* Цвет текста */
     cursor: pointer; /* Курсор при наведении */
     transition: background-color 0.3s; /* Плавный переход */
@@ -125,3 +125,32 @@ main {
 /* Добавить серый цвет фона при наведении курсора мыши */
 .pagination a:hover:not(.active) {background-color: #ddd;}
 
+.form-input {
+    width: 50%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-search-input {
+    width: 50%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-button {
+    width: 20%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}

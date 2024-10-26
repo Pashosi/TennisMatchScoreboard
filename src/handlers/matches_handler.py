@@ -21,12 +21,15 @@ class MatchesHandler:
 
             # Если поиск включен
             if self.search:
-                num_player = model.get_player(self.search).id
-                matches = model.get_matches(filter=num_player)
+                try:
+                    num_player = model.get_player(self.search).id
+                    matches = model.get_matches(filter=num_player)
+                except Exception:
+                    matches = []
             else:
                 matches = model.get_matches()
 
-            list_winner_players = model.get_players_winner_matches()  # список игроков с победами
+            list_winner_players = sorted(set(model.get_players_winner_matches()))  # список игроков с победами
 
             list_matches, pages = self.paginate_data(matches, int(self.page), 4)
             temlate = Template(content_before)
@@ -35,6 +38,7 @@ class MatchesHandler:
                 request_uri=request_uri,
                 matches=list_matches,
                 list_winner_players=list_winner_players,
+                search_query=self.search,
                 page=int(self.page),
                 pages=pages,
             )
