@@ -1,6 +1,6 @@
 from urllib.parse import urlencode, parse_qs
 
-from src import config
+import config
 from src.controller import Controller
 from src.handlers.index_handler import IndexHandler
 from src.handlers.match_score_get_handler import MatchScoreGetHandler
@@ -17,9 +17,6 @@ class Router:
         self.start_response = start_response
 
     unfinished_matches = {}  # словарь не завершенных матчей
-
-    #     self.path = environ.get('PATH_INFO', '/').lstrip('/')
-    #     self.method = environ.get('REQUEST_METHOD', 'GET')
 
     def __call__(self, method: str, path: str):
         status = '200 OK'
@@ -49,13 +46,18 @@ class Router:
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
                 # загружаем данные матча
-                # controller = Controller()
+
                 match = self.unfinished_matches.get(uuid)
                 if not match:
                     data = Controller.get_match(uuid)
                     match = TennisMatch(data)
                 n = 1
                 request = request_template(self.start_response, status, headers, MatchScoreGetHandler, match)
+                return request
+            else:
+                status = '404 Not Found'
+                headers = [('Content-type', 'text/html; charset=utf-8'), ]
+                request = request_template(self.start_response, status, headers, NotFoundHandler)
                 return request
 
         elif method == 'POST':
@@ -80,21 +82,21 @@ class Router:
                 """Обработчик кнопок матча"""
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
-                # data_button = self.controller.get_data_match(self.environ)
-                # controller = Controller()
-                # match = controller.get_match(uuid)
 
                 match = self.unfinished_matches.get(uuid)
                 if match is None:
                     raise Exception('Не найден матч')
-
-                # new_data_match = controller.add_point_match(self.environ, match)
 
                 # добавляем в html измененный экземпляр матча
                 request = request_template(self.start_response, status, headers, MatchScorePostHandler, match,
                                            self.environ)
                 if match.winner:
                     self.dellete_unfinished_match(uuid)
+                return request
+            else:
+                status = '404 Not Found'
+                headers = [('Content-type', 'text/html; charset=utf-8'), ]
+                request = request_template(self.start_response, status, headers, NotFoundHandler)
                 return request
         else:
             status = '404 Not Found'

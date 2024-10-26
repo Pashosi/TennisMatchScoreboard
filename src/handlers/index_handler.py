@@ -1,16 +1,17 @@
+import os
+
 from jinja2 import Template
 
-from src import config
+import config
 
 
 class IndexHandler:
 
     def __call__(self):
-        with open(f'{config.paths_list["templates_files"]}{config.paths_list["index"]}', 'rb') as file:
+        with open(os.path.join(config.BASE_DIR, "view", "templates", "index.html"), 'rb') as file:
             content_before = file.read().decode('utf-8')
 
-            request_uri = f'{config.paths_list["templates_files"]}' \
-                          f'{config.paths_list["index"]}'
+            request_uri = os.path.join(config.BASE_DIR, "view", "templates", "index.html")
 
             template = Template(content_before)
 

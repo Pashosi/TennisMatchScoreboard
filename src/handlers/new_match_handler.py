@@ -1,16 +1,17 @@
+import os
+
 from jinja2 import Template
 
-from src import config
+import config
 
 
 class NewMatchHandler:
 
     def __call__(self):
-        with open(f'{config.paths_list["templates_files"]}{config.paths_list["new_match"]}', 'rb') as file:
+        with open(os.path.join(config.BASE_DIR, "view", "templates", "new-match.html"), 'rb') as file:
             content_before = file.read().decode('utf-8')
 
-            request_uri = f'{config.paths_list["templates_files"]}' \
-                          f'{config.paths_list["new_match"]}'
+            request_uri = os.path.join(config.BASE_DIR, "view", "templates", "new-match.html")
 
 
 

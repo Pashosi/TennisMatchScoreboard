@@ -1,7 +1,8 @@
+import os
+
 from jinja2 import Template
 
-from src import config
-from src.model import Model
+import config
 from src.service.tennis_match import TennisMatch
 
 
@@ -10,11 +11,11 @@ class MatchScoreGetHandler:
         self.match = match
 
     def __call__(self):
-        with open(f'{config.paths_list["templates_files"]}{config.paths_list["match_score"]}', 'rb') as file:
+        with open(os.path.join(config.BASE_DIR, "view", "templates", "match-score.html"), 'rb') as file:
             content_before = file.read().decode('utf-8')
 
-            request_uri = f'{config.paths_list["templates_files"]}' \
-                          f'{config.paths_list["match_score"]}?uuid={self.match.uuid}'
+            request_uri = f'{os.path.join(config.BASE_DIR, "view", "templates", "match-score.html")}' \
+                          f'?uuid={self.match.uuid}'
 
             # player1 = self.match.player1
             # player2 = self.match.player2
@@ -25,8 +26,6 @@ class MatchScoreGetHandler:
             # player1_points = self.data_match.score['player1']['points']
             # player2_points = self.data_match.score['player2']['points']
             # uuid = f'uuid={self.data_match.uuid}'
-
-
 
             temlate = Template(content_before)
 

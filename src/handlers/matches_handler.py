@@ -1,6 +1,8 @@
+import os
+
 from jinja2 import Template
 
-from src import config
+import config
 from src.model import Model
 
 
@@ -11,11 +13,10 @@ class MatchesHandler:
         self.search = data['search']
 
     def __call__(self):
-        with open(f'{config.paths_list["templates_files"]}{config.paths_list["matches"]}', 'rb') as file:
+        with open(os.path.join(config.BASE_DIR, "view", "templates", "matches.html"), 'rb') as file:
             content_before = file.read().decode('utf-8')
 
-            request_uri = f'{config.paths_list["templates_files"]}' \
-                          f'{config.paths_list["matches"]}'
+            request_uri = os.path.join(config.BASE_DIR, "view", "templates", "matches.html")
 
             model = Model()
 

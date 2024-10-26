@@ -1,13 +1,11 @@
-from uuid import uuid4, UUID
+from uuid import UUID
 
 import sqlalchemy as sa
-import uuid as uuid
 
 from sqlalchemy.dialects.mysql import JSON
-from sqlalchemy.orm import as_declarative, Mapped, mapped_column, Session, relationship
+from sqlalchemy.orm import as_declarative, Mapped, mapped_column, relationship
 
-from src.config import db_config
-from mysql.connector import Error, connect
+from config import db_config
 
 engine = sa.create_engine(f'mysql+mysqlconnector://root:root@localhost:3306/{db_config["mysql"]["name"]}', echo=True)
 

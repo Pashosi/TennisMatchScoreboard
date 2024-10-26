@@ -1,9 +1,9 @@
+import os
 from urllib.parse import parse_qs
 
 from jinja2 import Template
 
-from src import config
-from src.db.create_db_and_tables import MatchesModel
+import config
 from src.service.tennis_match import TennisMatch
 
 
@@ -14,11 +14,11 @@ class MatchScorePostHandler:
         self.environ = environ
 
     def __call__(self):
-        with open(f'{config.paths_list["templates_files"]}{config.paths_list["match_score"]}', 'rb') as file:
+        with open(os.path.join(config.BASE_DIR, "view", "templates", "match-score.html"), 'rb') as file:
             content_before = file.read().decode('utf-8')
 
-            request_uri = f'{config.paths_list["templates_files"]}' \
-                          f'{config.paths_list["match_score"]}?uuid={self.match.uuid}'
+            request_uri = f'{os.path.join(config.BASE_DIR, "view", "templates", "match-score.html")}' \
+                          f'?uuid={self.match.uuid}'
 
             # Добавляем поинт
             self.add_point_match(self.environ, self.match)
