@@ -47,8 +47,8 @@ main {
     padding-left: auto;
     padding-right: auto;
     border-radius: 10px;
-    background-color: #f9f9f9;
-    min-weight: 50%;
+    background-color: #ecf9eb;
+    min-weight: 70%;
     min-width: 50%; /* Ограничиваем ширину табло */
     margin: auto; /* Центрируем табло */
 }
@@ -56,6 +56,7 @@ main {
 .table {
     width: 100%; /* Ширина таблицы */
     margin-bottom: 20px; /* Отступ снизу */
+    min-width: 400px;
 }
 
 .row {
@@ -72,6 +73,7 @@ main {
     flex: 1; /* Каждая ячейка занимает равное пространство */
     padding: 10px; /* Отступы внутри ячеек */
     border: 1px solid #ccc; /* Обводка для ячеек */
+    overflow: hidden; /* Обрезаем содержимое, если оно выходит за пределы ячейки */
 }
 
 .buttons {
