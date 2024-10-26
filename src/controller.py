@@ -1,13 +1,15 @@
 from urllib.parse import parse_qs
 
-
 from src.model import Model
 
 
 class Controller:
 
-    def new_match(self, environ):
-        data_form = self.get_data_form_new_match(environ)
+    def new_match(self, environ=None, test_data: dict = None):
+        if environ:
+            data_form = self.get_data_form_new_match(environ)
+        else:
+            data_form = test_data
         players = self.names_check(data_form)
         model_obj = Model()
         match = model_obj.add_match(*players)
