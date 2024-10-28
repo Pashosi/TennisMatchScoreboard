@@ -154,3 +154,7 @@ main {
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
+.back-table-row {
+    background-color: #d5e6d7;
+}
