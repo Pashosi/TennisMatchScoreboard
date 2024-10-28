@@ -23,13 +23,13 @@ class Router:
         headers = [('Content-type', 'text/html; charset=utf-8'), ]
 
         if method == 'GET':
-            if path == config.paths_list['new_match']:
+            if path == config.paths_list['new_match'][:-5]: # new-match
                 request = request_template(self.start_response, status, headers, NewMatchHandler)
                 return request
-            elif path == config.paths_list['index']:
+            elif path == config.paths_list['index'][:-5]: # index
                 request = request_template(self.start_response, status, headers, IndexHandler)
                 return request
-            elif path.startswith(config.paths_list['matches']):
+            elif path.startswith(config.paths_list['matches'][:-5]): # matches
                 n = 1
                 query_string = self.environ.get('QUERY_STRING')
                 params = parse_qs(query_string)
@@ -42,7 +42,7 @@ class Router:
                 data = {'page': page, 'search': search_query}
                 request = request_template(self.start_response, status, headers, MatchesHandler, match=data)
                 return request
-            elif path.startswith(config.paths_list['match_score']):
+            elif path.startswith(config.paths_list['match_score'][:-5]): # match-score
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
                 # загружаем данные матча
@@ -61,7 +61,7 @@ class Router:
                 return request
 
         elif method == 'POST':
-            if path == config.paths_list['new_match']:
+            if path == config.paths_list['new_match'][:-5]: # new-match
                 controller = Controller()
                 data_form = controller.new_match(self.environ)
                 n = 2
@@ -71,14 +71,14 @@ class Router:
                 n = 1
                 # Создаем параметры для редиректа
                 query_params = urlencode({'uuid': instance_match.uuid})
-                redirect_url = f'{config.paths_list["match_score"]}?{query_params}'
+                redirect_url = f'{config.paths_list["match_score"][:-5]}?{query_params}'
 
                 # После обработки данных делаем редирект
                 status = '302 Found'
                 headers = [('Location', redirect_url)]  # Перенаправляем на страницу success
                 request = request_template(self.start_response, status, headers)
                 return request
-            elif path.startswith(config.paths_list['match_score']):
+            elif path.startswith(config.paths_list['match_score'][:-5]):
                 """Обработчик кнопок матча"""
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
@@ -91,7 +91,7 @@ class Router:
                 request = request_template(self.start_response, status, headers, MatchScorePostHandler, match,
                                            self.environ)
                 if match.winner:
-                    self.dellete_unfinished_match(uuid)
+                    self.delete_unfinished_match(uuid)
                 return request
             else:
                 status = '404 Not Found'
@@ -104,7 +104,7 @@ class Router:
             request = request_template(self.start_response, status, headers, NotFoundHandler)
             return request
 
-    def dellete_unfinished_match(self, uuid):
+    def delete_unfinished_match(self, uuid):
         self.unfinished_matches.pop(uuid)
         print(f'Матч {uuid} удален')
 

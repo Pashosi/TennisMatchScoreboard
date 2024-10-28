@@ -12,21 +12,25 @@
 <body>
 <header>
     <nav>
-        <a href="index.html">Home</a>
-        <a href="new-match.html">New</a>
-        <a href="matches.html?page=1">Matches</a>
+        <a href="index">Home</a>
+        <a href="new-match">New</a>
+        <a href="matches?page=1">Matches</a>
     </nav>
 </header>
 
 <main>
     <div class="scoreboard">
         <h2>Начать новый матч</h2>
-        <form action="new-match.html" method="POST">
-            <label >Игрок 1:</label>
-            <input class="form-input" type="text" name="name1" pattern="[a-zA-Zа-яА-Я0-9]+" required title="Только буквы и цифры">
+        <form action="new-match" method="POST">
+            <label>Игрок 1:</label>
+            <input class="form-input" type="text" name="name1"
+                   pattern="^[a-zA-Zа-яА-Я0-9]{1,15}(?:\s[a-zA-Zа-яА-Я0-9]{1,15})?$" required
+                   title="Не правильно введен игрок или превышено количество символов (имя и фамилия по 15 букв)">
             <p>
-                <label >Игрок 2:</label>
-                <input class="form-input" type="text" name="name2" pattern="[a-zA-Zа-яА-Я0-9]+" required title="Только буквы и цифры">
+                <label>Игрок 2:</label>
+                <input class="form-input" type="text" name="name2"
+                       pattern="^[a-zA-Zа-яА-Я0-9]{1,15}(?:\s[a-zA-Zа-яА-Я0-9]{1,15})?$" required
+                       title="Не правильно введен игрок или превышено количество символов (имя и фамилия по 15 букв)">
             <p>
                 <button class="btn" type="submit">Отправить</button>
         </form>
