@@ -1,6 +1,7 @@
 from uuid import UUID
 
 import sqlalchemy as sa
+from mysql.connector import Error, connect
 
 from sqlalchemy.dialects.mysql import JSON
 from sqlalchemy.orm import as_declarative, Mapped, mapped_column, relationship
@@ -10,6 +11,18 @@ from config import db_config
 engine = sa.create_engine(f'mysql+mysqlconnector://root:root@localhost:3306/{db_config["mysql"]["name"]}', echo=True)
 
 meta = sa.MetaData()
+
+try:
+    with connect(
+        host=db_config["mysql"]["host"],
+        user=db_config["mysql"]["user"],
+        password=db_config["mysql"]["password"],
+    ) as connection:
+        create_db_query = 'CREATE DATABASE IF NOT EXISTS tennis_match_db'
+        with connection.cursor() as cursor:
+            cursor.execute(create_db_query)
+except Error as e:
+    print(e)
 
 
 #
