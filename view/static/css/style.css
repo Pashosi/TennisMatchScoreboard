@@ -19,8 +19,8 @@ header {
 
 nav a {
     display: inline-block;
-    margin: 10px;
-    padding: 15px 25px;
+    margin: 1%;
+    padding: 15px 5%;
     font-size: 20px;
     text-decoration: none;
     color: #008000;
@@ -54,9 +54,9 @@ main {
 }
 
 .table {
-    width: 100%; /* Ширина таблицы */
+    width: 70%; /* Ширина таблицы */
     margin-bottom: 20px; /* Отступ снизу */
-    min-width: 400px;
+    min-width: 100%;
 }
 
 .row {
@@ -107,10 +107,10 @@ main {
 
 /* Ссылки для разбиения на страницы */
 .pagination a {
-    margin: 0 4px;
+    margin: 0 2px;
     color: black;
     float: left;
-    padding: 8px 16px;
+    padding: 8px 10px;
     text-decoration: none;
     transition: background-color .3s;
     border: 1px solid #ddd; /* Серый */
