@@ -23,13 +23,13 @@ class Router:
         headers = [('Content-type', 'text/html; charset=utf-8'), ]
 
         if method == 'GET':
-            if path == config.paths_list['new_match'][:-5]: # new-match
+            if path == config.paths_list['new_match'][:-5]:  # new-match
                 request = request_template(self.start_response, status, headers, NewMatchHandler)
                 return request
-            elif path == config.paths_list['index'][:-5]: # index
+            elif path == config.paths_list['index'][:-5]:  # index
                 request = request_template(self.start_response, status, headers, IndexHandler)
                 return request
-            elif path.startswith(config.paths_list['matches'][:-5]): # matches
+            elif path.startswith(config.paths_list['matches'][:-5]):  # matches
                 n = 1
                 query_string = self.environ.get('QUERY_STRING')
                 params = parse_qs(query_string)
@@ -42,33 +42,35 @@ class Router:
                 data = {'page': page, 'search': search_query}
                 request = request_template(self.start_response, status, headers, MatchesHandler, match=data)
                 return request
-            elif path.startswith(config.paths_list['match_score'][:-5]): # match-score
+            elif path.startswith(config.paths_list['match_score'][:-5]):  # match-score
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
-                # загружаем данные матча
 
+                if len(uuid) != 36:  # если не правильный uuid
+                    request = request_not_found(self.start_response)
+                    return request
+
+                # загружаем данные матча
                 match = self.unfinished_matches.get(uuid)
+
                 if not match:
                     data = Controller.get_match(uuid)
                     match = TennisMatch(data)
-                n = 1
                 request = request_template(self.start_response, status, headers, MatchScoreGetHandler, match)
                 return request
             else:
-                status = '404 Not Found'
-                headers = [('Content-type', 'text/html; charset=utf-8'), ]
-                request = request_template(self.start_response, status, headers, NotFoundHandler)
+                request = request_not_found(self.start_response)
                 return request
 
         elif method == 'POST':
-            if path == config.paths_list['new_match'][:-5]: # new-match
+            if path == config.paths_list['new_match'][:-5]:  # new-match
                 controller = Controller()
                 data_form = controller.new_match(self.environ)
-                n = 2
+
                 # Создаем экземпляр матча
                 instance_match = TennisMatch(data_form)
                 self.unfinished_matches[instance_match.uuid] = instance_match
-                n = 1
+
                 # Создаем параметры для редиректа
                 query_params = urlencode({'uuid': instance_match.uuid})
                 redirect_url = f'{config.paths_list["match_score"][:-5]}?{query_params}'
@@ -82,7 +84,6 @@ class Router:
                 """Обработчик кнопок матча"""
                 # получаем uuid
                 uuid = self.environ.get('QUERY_STRING', '').split('=')[1]
-
                 match = self.unfinished_matches.get(uuid)
                 if match is None:
                     raise Exception('Не найден матч')
@@ -93,15 +94,12 @@ class Router:
                 if match.winner:
                     self.delete_unfinished_match(uuid)
                 return request
+
             else:
-                status = '404 Not Found'
-                headers = [('Content-type', 'text/html; charset=utf-8'), ]
-                request = request_template(self.start_response, status, headers, NotFoundHandler)
+                request = request_not_found(self.start_response)
                 return request
         else:
-            status = '404 Not Found'
-            headers = [('Content-type', 'text/html; charset=utf-8'), ]
-            request = request_template(self.start_response, status, headers, NotFoundHandler)
+            request = request_not_found(self.start_response)
             return request
 
     def delete_unfinished_match(self, uuid):
@@ -125,3 +123,11 @@ def request_template(start_response, status, response_headers, class_handler=Non
 
     html_as_bytes = request.encode("utf-8")
     return [html_as_bytes]
+
+
+def request_not_found(start_response):
+    """Формируем html страницы неверного запроса и возвращаем его"""
+    status = '404 Not Found'
+    headers = [('Content-type', 'text/html; charset=utf-8'), ]
+    request = request_template(start_response, status, headers, NotFoundHandler)
+    return request
