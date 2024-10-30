@@ -7,7 +7,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
     <title>SuperTennis</title>
+    <script>
+        function validateForm() {
+            const name1 = document.getElementById('name1');
+            const name2 = document.getElementById('name2');
 
+            // Проверка на одинаковые значения
+            if (name1.value === name2.value) {
+                name2.setCustomValidity('Названия команд должны быть разными');
+            }
+        }
+
+
+    </script>
 </head>
 <body>
 <header>
@@ -16,6 +28,7 @@
         <a href="new-match">New</a>
         <a href="matches?page=1">Matches</a>
     </nav>
+
 </header>
 
 <main>
@@ -23,14 +36,16 @@
         <h2>Начать новый матч</h2>
         <form action="new-match" method="POST">
             <label>Игрок 1:</label>
-            <input class="form-input" type="text" name="name1"
+            <input class="form-input" type="text" id="name1" name="name1"
                    pattern="^[a-zA-Zа-яА-Я0-9]{1,15}(?:\s[a-zA-Zа-яА-Я0-9]{1,15})?$" required
-                   title="Не правильно введен игрок или превышено количество символов (имя и фамилия по 15 букв)">
+                   title="Не правильно введен игрок или превышено количество символов (имя и фамилия по 15 букв)"
+                   oninput="validateForm()">
             <p>
                 <label>Игрок 2:</label>
-                <input class="form-input" type="text" name="name2"
+                <input class="form-input" type="text" id="name2" name="name2"
                        pattern="^[a-zA-Zа-яА-Я0-9]{1,15}(?:\s[a-zA-Zа-яА-Я0-9]{1,15})?$" required
-                       title="Не правильно введен игрок или превышено количество символов (имя и фамилия по 15 букв)">
+                       title="Не правильно введен игрок или превышено количество символов (имя и фамилия по 15 букв)"
+                       oninput="validateForm()">
             <p>
                 <button class="btn" type="submit">Отправить</button>
         </form>
