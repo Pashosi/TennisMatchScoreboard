@@ -1,5 +1,6 @@
+import os
 from uuid import UUID
-
+from dotenv import load_dotenv
 import sqlalchemy as sa
 from mysql.connector import Error, connect
 
@@ -8,24 +9,15 @@ from sqlalchemy.orm import as_declarative, Mapped, mapped_column, relationship
 
 from config import db_config
 
-engine = sa.create_engine(f'mysql+mysqlconnector://root:root@localhost:3306/{db_config["mysql"]["name"]}', echo=True)
+load_dotenv()
+NAME = os.getenv('NAME')
+PASSWORD = os.getenv('PASSWORD')
+
+engine = sa.create_engine(f'mysql+mysqlconnector://{NAME}:{PASSWORD}@localhost:3306/{db_config["mysql"]["name"]}', echo=True)
 
 meta = sa.MetaData()
 
-try:
-    with connect(
-        host=db_config["mysql"]["host"],
-        user=db_config["mysql"]["user"],
-        password=db_config["mysql"]["password"],
-    ) as connection:
-        create_db_query = 'CREATE DATABASE IF NOT EXISTS tennis_match_db'
-        with connection.cursor() as cursor:
-            cursor.execute(create_db_query)
-except Error as e:
-    print(e)
 
-
-#
 @as_declarative(metadata=meta)
 class AbstractModel:
     id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
@@ -60,24 +52,3 @@ class MatchesModel(AbstractModel):
                f'player2={self.player2}, ' \
                f'winner={self.winner}, ' \
                f'score={self.score})'
-
-
-# with Session(engine) as session:
-#     with session.begin():
-#         AbstractModel.metadata.create_all(engine)
-
-# with Session(engine) as session:
-#     with session.begin():
-#         player_match1 = session.get(PlayersModel, 5)
-#         player_match2 = session.get(PlayersModel, 6)
-#
-#         # print(player_match1, player_match2)
-#         match = MatchesModel(
-#             player1=player_match1,
-#             player2=player_match2,
-#             winner=player_match1,
-#             score={'player1': 0, 'player2': 2},
-#         )
-#         session.add(match)
-#         print(player_match1)
-#         print(player_match2)
