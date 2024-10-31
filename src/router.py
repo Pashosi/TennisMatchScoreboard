@@ -35,7 +35,13 @@ class Router:
                 params = parse_qs(query_string)
 
                 # достаем параметры страницы
-                page = int(params.get('page', [1])[0])  # номер страницы или 1 если нет
+                page = params.get('page', [1])[0]  # номер страницы или 1 если нет
+
+                try:
+                    page = int(page)
+                except ValueError:
+                    request = request_not_found(self.start_response)
+                    return request
 
                 search_query = params.get('search', [''])[0]  # параметр фильтрации, если есть
 

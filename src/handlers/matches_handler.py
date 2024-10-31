@@ -33,6 +33,15 @@ class MatchesHandler:
             list_winner_players = sorted(set(model.get_players_winner_matches()))  # список игроков с победами
 
             list_matches, pages = self.paginate_data(matches, int(self.page), 4)
+
+            # валидация вводимой страницы
+            if self.page not in range(1, pages + 1):
+                if self.page > pages:
+                    self.page = pages
+                else:
+                    self.page = 1
+                list_matches, pages = self.paginate_data(matches, int(self.page), 4)
+
             temlate = Template(content_before)
 
             content_afer = temlate.render(
