@@ -26,7 +26,7 @@ class Router:
             if path == config.paths_list['new_match'][:-5]:  # new-match
                 request = request_template(self.start_response, status, headers, NewMatchHandler)
                 return request
-            elif path == config.paths_list['index'][:-5]:  # index
+            elif path == config.paths_list['index'][:-5] or not path:  # index
                 request = request_template(self.start_response, status, headers, IndexHandler)
                 return request
             elif path.startswith(config.paths_list['matches'][:-5]):  # matches

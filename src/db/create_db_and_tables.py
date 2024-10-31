@@ -13,6 +13,18 @@ load_dotenv()
 NAME = os.getenv('NAME')
 PASSWORD = os.getenv('PASSWORD')
 
+try:
+    with connect(
+        host=db_config["mysql"]["host"],
+        user=NAME,
+        password=PASSWORD,
+    ) as connection:
+        create_db_query = 'CREATE DATABASE IF NOT EXISTS tennis_match_db'
+        with connection.cursor() as cursor:
+            cursor.execute(create_db_query)
+except Error as e:
+    print(e)
+
 engine = sa.create_engine(f'mysql+mysqlconnector://{NAME}:{PASSWORD}@localhost:3306/{db_config["mysql"]["name"]}', echo=True)
 
 meta = sa.MetaData()
