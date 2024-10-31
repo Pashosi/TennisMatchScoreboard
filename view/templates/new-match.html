@@ -12,9 +12,12 @@
             const name1 = document.getElementById('name1');
             const name2 = document.getElementById('name2');
 
+
             // Проверка на одинаковые значения
             if (name1.value === name2.value) {
                 name2.setCustomValidity('Названия команд должны быть разными');
+            } else {
+                name2.setCustomValidity(''); // Сброс сообщения об ошибке
             }
         }
 
